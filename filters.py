@@ -8,33 +8,54 @@ def load_data():
     return pressures, dependencies
 
 def get_filters(pressures):
-    """Generate the filters for the sidebar, reset for each page visit."""
+    """Generate the filters for the sidebar, save state across pages."""
     
+    # Initialize session state for filters if not already set
+    if 'section_filter' not in st.session_state:
+        st.session_state.section_filter = 'All'
+    if 'division_filter' not in st.session_state:
+        st.session_state.division_filter = 'All'
+    if 'group_filter' not in st.session_state:
+        st.session_state.group_filter = 'All'
+    if 'class_filter' not in st.session_state:
+        st.session_state.class_filter = 'All'
+
     # Sidebar for selecting filters
+    section_options = ['All'] + list(pressures['ISIC_Section'].unique())
     section_filter = st.sidebar.selectbox(
         'Select Section',
-        ['All'] + list(pressures['ISIC_Section'].unique())
+        section_options,
+        index=section_options.index(st.session_state.section_filter)
     )
+    st.session_state.section_filter = section_filter
 
-    # For Division
+    division_options = ['All'] + list(pressures[pressures['ISIC_Section'] == section_filter]['ISIC_Division'].unique())
     division_filter = st.sidebar.selectbox(
         'Select Division',
-        ['All'] + list(pressures[pressures['ISIC_Section'] == section_filter]['ISIC_Division'].unique())
+        division_options,
+        index=division_options.index(st.session_state.division_filter)
     )
+    st.session_state.division_filter = division_filter
 
-    # For Group
+    group_options = ['All'] + list(pressures[pressures['ISIC_Division'] == division_filter]['ISIC_Group'].unique())
     group_filter = st.sidebar.selectbox(
         'Select Group',
-        ['All'] + list(pressures[pressures['ISIC_Division'] == division_filter]['ISIC_Group'].unique())
+        group_options,
+        index=group_options.index(st.session_state.group_filter)
     )
+    st.session_state.group_filter = group_filter
 
-    # For Class
+    class_options = ['All'] + list(pressures[pressures['ISIC_Group'] == group_filter]['ISIC_Class'].unique())
     class_filter = st.sidebar.selectbox(
         'Select Class',
-        ['All'] + list(pressures[pressures['ISIC_Group'] == group_filter]['ISIC_Class'].unique())
+        class_options,
+        index=class_options.index(st.session_state.class_filter)
     )
+    st.session_state.class_filter = class_filter
 
     return section_filter, division_filter, group_filter, class_filter
+
+
 
 
 

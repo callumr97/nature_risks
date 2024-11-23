@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from filters import load_data, get_filters
 
 # Set up the page
@@ -38,4 +37,5 @@ st.markdown(f"""
 st.markdown("""
 After you set the filters, you can explore the **Dependencies** and **Pressures** pages to dive deeper into ecosystem service data.
 """)
+
 
